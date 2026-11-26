@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#151c17">
+<meta name="description" content="跟著 Zuiko 探索加拿大濕地，挑戰三分鐘巡查或無限時生存。">
+<title>ZUIKO｜濕地警戒</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="shotgun-audio.js"></script>
+<script defer src="game.js"></script>
+</head>
+<body>
+<main class="console">
+  <header class="mast">
+    <div class="brand"><span class="insignia" aria-hidden="true">✦</span><div><strong>ZUIKO</strong><span>WETLAND WATCH</span></div></div>
+    <div class="location"><span class="pin" aria-hidden="true"></span><span>加拿大・草原濕地 <small>CANADIAN PRAIRIE WETLANDS</small></span></div>
+    <div class="tools"><button id="sound" type="button" aria-pressed="true" aria-label="切換音效"><span id="sound-icon" aria-hidden="true">◖))</span><span class="tool-text">音效</span></button><button id="pause" type="button" aria-label="暫停" disabled><span aria-hidden="true">Ⅱ</span><span class="tool-text">暫停</span></button></div>
+  </header>
+  <section class="layout" aria-label="遊戲畫面">
+    <div class="field" data-playing="false">
+      <canvas id="world" tabindex="0" aria-label="濕地遊戲畫面。WASD 或方向鍵移動，按住滑鼠左鍵或空白鍵向移動的反方向開火。停步時沿用最後的射擊方向。"></canvas>
+      <div class="field-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="field-top"><span id="sector">N 01 / 蘆葦灣</span><span id="wave">待命</span></div>
+      <div id="banner" class="banner" aria-live="polite"></div>
+      <div class="overlay" id="overlay" data-mode="start">
+        <img class="cover-portrait" src="zuiko.webp" alt="" aria-hidden="true"><div class="mission" id="mission">
+          <div class="mission-kicker" id="kicker"><span></span> 濕地巡查任務</div>
+          <h1 id="mission-title">濕地警戒</h1>
+          <p id="mission-copy">每次巡查都會生成新的加拿大草原濕地。<br>沿岸地或木橋走能保住速度，涉水時雁群更容易追上。</p>
+          <div class="mission-actions">
+            <button id="primary" class="primary" type="button">開始巡查 <span aria-hidden="true">▶</span></button>
+            <button id="survival" class="primary secondary" type="button">生存模式 · 無限時</button>
+          </div>
+        </div>
+      </div>
+      <div id="touch-controls" class="touch-controls" hidden>
+        <div id="stick" class="stick" role="group" aria-label="觸控移動"><span></span></div>
+        <button id="fire-touch" class="fire-touch" type="button">驅離</button>
+      </div>
+      <div class="field-bottom"><span><b aria-hidden="true">✧</b> <span id="terrain" role="status">岸地</span></span><span id="coords" aria-hidden="true">0830 E&nbsp; / &nbsp;0580 N</span><span id="field-timer" aria-hidden="true">03:00</span></div>
+    </div>
+    <aside class="side" aria-label="角色及任務狀態">
+      <section class="panel agent">
+        <div class="agent-info"><div class="label"><span class="dot"></span> 巡查員</div><h2>Zuiko</h2><div class="agent-role">濕地偵察</div></div>
+        <div class="portrait" aria-hidden="true"><canvas id="portrait" width="72" height="72"></canvas></div>
+        <div class="health"><div class="health-title"><span>體力</span><strong id="hp-value">100 / 100</strong></div><progress id="health" value="100" max="100" aria-label="體力"></progress></div>
+      </section>
+      <section class="panel gun">
+        <div class="label">獵槍循環</div>
+        <div class="gun-status"><strong id="gun-status">待命</strong><span id="gun-clock">—</span></div>
+        <div class="stages" aria-label="退殼、上殼、發射"><span data-step="0">退殼</span><span data-step="1">上殼</span><span data-step="2">發射</span></div>
+        <progress id="gun-progress" value="0" max="1" aria-label="距離下一個動作"></progress>
+      </section>
+      <section class="panel journal">
+        <div class="label">黑雁屬圖鑑</div>
+        <ul>
+          <li><canvas class="bird-icon" width="35" height="24" data-bird="canada" aria-hidden="true"></canvas><span>加拿大雁</span><small>集群包夾</small></li>
+          <li><canvas class="bird-icon" width="35" height="24" data-bird="cackling" aria-hidden="true"></canvas><span>小加拿大雁</span><small>快速衝刺</small></li>
+          <li><canvas class="bird-icon" width="35" height="24" data-bird="brant" aria-hidden="true"></canvas><span>黑雁</span><small>側翼迂迴</small></li>
+          <li><canvas class="bird-icon" width="35" height="24" data-bird="barnacle" aria-hidden="true"></canvas><span>白頰黑雁</span><small>成對逼近</small></li>
+          <li><canvas class="bird-icon" width="35" height="24" data-bird="redbreasted" aria-hidden="true"></canvas><span>紅胸黑雁</span><small>近距突進</small></li>
+          <li><canvas class="bird-icon" width="35" height="24" data-bird="hawaiian" aria-hidden="true"></canvas><span>夏威夷雁</span><small>直線追擊</small></li>
+        </ul>
+        <details class="field-notes">
+          <summary>其他水鳥</summary>
+          <ul>
+            <li><canvas class="bird-icon" width="35" height="24" data-bird="snow" aria-hidden="true"></canvas><span>雪雁</span><small>快速衝刺</small></li>
+            <li><canvas class="bird-icon" width="35" height="24" data-bird="whitefront" aria-hidden="true"></canvas><span>白額雁</span><small>側翼迂迴</small></li>
+            <li><canvas class="bird-icon" width="35" height="24" data-bird="ross" aria-hidden="true"></canvas><span>羅氏雁</span><small>成對突進</small></li>
+            <li><canvas class="bird-icon" width="49" height="35" data-bird="swan" aria-hidden="true"></canvas><span>黑嘴天鵝</span><small>兩槍驅離</small></li>
+            <li><canvas class="bird-icon" width="55" height="35" data-bird="mute" aria-hidden="true"></canvas><span>疣鼻天鵝</span><small>兩槍・直線撲擊</small></li>
+          </ul>
+        </details>
+      </section>
+    </aside>
+  </section>
+  <footer class="base">
+    <div class="keys"><span><kbd>W A S D</kbd><kbd>↑ ↓ ← →</kbd> 移動</span><span><kbd>左鍵</kbd><kbd>空白</kbd> 向移動反方向開火</span></div>
+    <div class="touch-hint">拖曳搖桿移動 · 按住「驅離」向後開火</div>
+    <div class="stats"><div><span id="timer-label">撤離倒數</span><strong id="timer">03:00</strong></div><div><span>已驅離</span><strong id="frightened">00</strong></div></div>
+  </footer>
+</main>
+</body>
+</html>
