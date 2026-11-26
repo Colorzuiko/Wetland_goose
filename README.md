@@ -2,7 +2,7 @@
 
 在加拿大草原濕地穿過雁群的包圍，撐到撤離。網頁版使用 HTML、CSS 和 JavaScript。
 
-[線上試玩](https://zuiko-wetland-watch.holyzuiko.chatgpt.site/)
+[線上試玩](./index.html)
 
 ## 網頁版
 
